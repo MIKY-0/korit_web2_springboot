@@ -28,4 +28,12 @@ public class PostRepository {
                 .filter(post -> post.getId() == id)
                 .findFirst(); // 객체가 있으면 객체를 optinal로 감싸서 리턴 , 없으면 null을 optional로 감싸서 리턴
     }
+
+    //(문제1) 단건 추가 컨트롤러 -> 서비스 -> 레포 코드 작성(validation 사용해보자)
+    public int insertPost(String title , String content){
+        int addId = posts . stream() . map(post -> post.getId()) . max((id1 , id2) -> id1 - id2) . get();
+        Post post = new Post(addId + 1 , title , content); // sql insert쿼리와 동일
+        posts.add(post);
+        return 1;
+    }
 }

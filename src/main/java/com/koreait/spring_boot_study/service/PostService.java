@@ -1,6 +1,9 @@
 package com.koreait.spring_boot_study.service;
 
+import com.koreait.spring_boot_study.dto.AddPostReqDto;
+import com.koreait.spring_boot_study.dto.PostResDto;
 import com.koreait.spring_boot_study.entity.Post;
+import com.koreait.spring_boot_study.exception.PostInsertException;
 import com.koreait.spring_boot_study.exception.PostNotFoundException;
 import com.koreait.spring_boot_study.repository.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,5 +37,26 @@ public class PostService {
         Post post = postOptional.orElseThrow(() -> new PostNotFoundException("게시물을 찾을 수 없습니다"));
 
         return post.getTitle();
+    }
+
+    //게시글 전체 리턴
+    public List<PostResDto> getAllPost(){
+        return postRepository.findAll() // 결과 : List<Post>
+                .stream() . map(post -> new PostResDto(post.getTitle() , post.getContent())) . collect(Collectors.toList());
+    }
+
+    //게시글 단건 리턴
+    public PostResDto getPostById(int id){
+        Post post = postRepository . findTitleById(id) //결과 : Optional<Post>
+                .orElseThrow(() -> new PostNotFoundException("게시글을 찾을 수 없음"));
+        return new PostResDto(post.getTitle() , post.getContent());
+    }
+
+    //(문제1) 단건 추가 컨트롤러 -> 서비스 -> 레포 코드 작성(validation 사용해보자)
+    public void addPost(AddPostReqDto dto){
+        int updateCount = postRepository . insertPost (dto.getTitle() , dto.getContent());
+        if(updateCount <= 0){
+            throw new PostInsertException("게시글 업데이트 중 오류");
+        }
     }
 }

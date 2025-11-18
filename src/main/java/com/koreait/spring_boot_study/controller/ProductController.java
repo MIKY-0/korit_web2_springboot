@@ -2,6 +2,7 @@ package com.koreait.spring_boot_study.controller;
 
 import com.koreait.spring_boot_study.dto.AddProductDto;
 import com.koreait.spring_boot_study.service.ProductService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,7 +24,7 @@ public class ProductController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<?> postProduct(@RequestBody AddProductDto dto){
+    public ResponseEntity<?> postProduct(@Valid @RequestBody AddProductDto dto){
         productService.addProduct(dto);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
