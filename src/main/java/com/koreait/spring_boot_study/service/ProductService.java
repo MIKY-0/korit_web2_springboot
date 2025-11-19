@@ -3,8 +3,10 @@ package com.koreait.spring_boot_study.service;
 //ProductRepository를 호출할 서비스를 만들것이다.
 
 import com.koreait.spring_boot_study.dto.AddProductDto;
+import com.koreait.spring_boot_study.dto.ModifyProductReqDto;
 import com.koreait.spring_boot_study.entity.Product;
 import com.koreait.spring_boot_study.exception.ProductInsertException;
+import com.koreait.spring_boot_study.exception.ProductNotFoundException;
 import com.koreait.spring_boot_study.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -49,6 +51,22 @@ public class ProductService {
                 .insertProduct(dto.getName() , dto.getPrice());
         if(successCount <= 0){
             throw new ProductInsertException("상품등록 중 문제가 생김");
+        }
+    }
+
+    //4.상품삭제
+    public void removeProduct(int id){
+        int successCount = productRepository.deleteProductById(id);
+        if(successCount <= 0){
+            throw new ProductNotFoundException("해당 상품은 존재하지 않음");
+        }
+    }
+
+    //5.상품 업데이트
+    public void modifyProduct(int id , ModifyProductReqDto dto){
+        int successCount = productRepository.updateProduct(id , dto.getName() , dto.getPrice());
+        if(successCount <= 0){
+            throw new ProductNotFoundException("해당 상품은 존재하지 않음");
         }
     }
 }

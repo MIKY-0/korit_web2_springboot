@@ -1,6 +1,7 @@
 package com.koreait.spring_boot_study.controller;
 
 import com.koreait.spring_boot_study.dto.AddPostReqDto;
+import com.koreait.spring_boot_study.dto.ModifyPostReqDto;
 import com.koreait.spring_boot_study.dto.PostResDto;
 import com.koreait.spring_boot_study.service.PostService;
 import jakarta.validation.Valid;
@@ -53,6 +54,22 @@ public class PostController {
         return ResponseEntity . status(HttpStatus.CREATED) . body("업데이트 완료");
         }
 
-        //4.게시글 title , content를 담은 List응답
+
+    //(문제2) id를 받아서 게시글 삭제하는 컨트롤러 , 서비스 , 레포. (난 Optional 사용해서 풀거임)
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deletePost(@PathVariable int id){
+        postService.removePost(id);
+        return ResponseEntity.ok("삭제 완료");
+    }
+
+    //(문제3)id와 dto를 받아서 게시글을 업데이트하는 컨트롤러 , 서비스 , 레포. (난 Optional 사용해서 풀거임)
+        @PutMapping("/{id}")
+    public ResponseEntity<?> modifyPost(@PathVariable int id , @Valid @RequestBody ModifyPostReqDto dto){
+        postService.modifyPost(id , dto);
+        return ResponseEntity.ok("수정 완료");
+        }
+        //수정요청 PUT , PATCH
+    //PUT -> 전체 데이터를 덮어씌우겠다( title , content 둘다 )
+    //PATCH -> 일부 데이터를 덮어씌우겠다(title / content 둘 중 하나) -> null 허용해야하는 경우가 많음. -> 까다롭다.
     }
 

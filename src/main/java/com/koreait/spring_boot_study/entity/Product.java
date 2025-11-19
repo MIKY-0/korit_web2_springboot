@@ -3,8 +3,9 @@ package com.koreait.spring_boot_study.entity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
-@AllArgsConstructor     @Getter     @Setter
+@AllArgsConstructor     @Getter     @Setter     @ToString
 //엔티티 : 관계형 데이터베이스와 1:1 대응되는 자바 객체.
 public class Product {
     private int id;

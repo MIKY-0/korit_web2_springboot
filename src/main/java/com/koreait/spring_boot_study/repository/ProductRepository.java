@@ -1,6 +1,7 @@
 package com.koreait.spring_boot_study.repository;
 
 import com.koreait.spring_boot_study.entity.Product;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
@@ -8,7 +9,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-@Repository
+@Repository     @Slf4j
 public class ProductRepository {
     //DB 대용 데이터. 원래는 하면 안되지만 지금은 DB 연동 전이니까
     private List<Product> products = new ArrayList<>(
@@ -62,4 +63,37 @@ public class ProductRepository {
         products.add(product);
         return 1; // 한줄추가 -> 1 리턴 , n줄 추가 -> n 리턴
     }
+
+//단건 삭제. id를 통해 단건 삭제
+    public int deleteProductById(int id){
+        //매개변수로 들어온 id가 유효한지 검증. 유효하지 않으면 0리턴 : 예외를 던져서.
+        Optional<Product> target = products.stream()
+                .filter(product -> product.getId() == id) . findFirst(); // findFirst : 매칭되는 첫번쨰 데이터를 옵셔녈에 포장해서 들고와라
+        if(target.isEmpty())  return 0; // 찾은 optional을 언패킹했더니 null이라면 0 리턴
+        products.remove(target.get()); // Product product = target.get(); productsremove(product); 를 한줄로 작성한 것.
+        log.info("상품삭제 완료 : {}" , target.get());
+        return 1;
+    }
+
+    //단건 업데이트
+    public int updateProduct(int id , String name , int price){
+        //매개변수로 들어온 id가 유효한지 검증. 이번엔 Optional 안쓰고 해보기
+        Product target = null;
+        for(Product p : products){
+            if(p.getId() == id){ // 매개변수로 들어온 id와 같다면
+                target = p;
+                break;
+            }
+        }
+        if(target == null) return 0; // 타겟이 업뎃 안됐다면 id는 유효하지 않은것. -> 업데이트 0건 했다.
+        //List 업데이트. set(index , 저장할 데이터). ( = 키 , 밸류)
+        int index = products.indexOf(target);
+        Product newProduct = new Product(id , name , price); // entity형태로 DB에 저장.
+        products.set(index , newProduct); // index(target이 있던 자리)에 새로 만든 객체 newProduct가 저장됨.
+        return 1; // 1건 업데이트했다.
+
+    }
 }
+
+
+
