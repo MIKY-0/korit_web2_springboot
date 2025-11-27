@@ -1,6 +1,8 @@
-package com.koreait.spring_boot_study.repository;
+package com.koreait.spring_boot_study.repository.impl;
 
 import com.koreait.spring_boot_study.entity.Product;
+import com.koreait.spring_boot_study.model.Top3SellingProduct;
+import com.koreait.spring_boot_study.repository.ProductRepo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
@@ -10,7 +12,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository     @Slf4j
-public class ProductRepository {
+public class ProductRepository implements ProductRepo {
     //DB 대용 데이터. 원래는 하면 안되지만 지금은 DB 연동 전이니까
     private List<Product> products = new ArrayList<>(
             Arrays.asList(
@@ -73,6 +75,11 @@ public class ProductRepository {
         products.remove(target.get()); // Product product = target.get(); productsremove(product); 를 한줄로 작성한 것.
         log.info("상품삭제 완료 : {}" , target.get());
         return 1;
+    }
+
+    @Override // 구현안했음.
+    public List<Top3SellingProduct> findTop3SellingProducts() {
+        return List.of();
     }
 
     //단건 업데이트

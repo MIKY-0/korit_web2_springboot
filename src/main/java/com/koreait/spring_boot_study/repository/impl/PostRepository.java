@@ -1,6 +1,7 @@
-package com.koreait.spring_boot_study.repository;
+package com.koreait.spring_boot_study.repository.impl;
 
 import com.koreait.spring_boot_study.entity.Post;
+import com.koreait.spring_boot_study.repository.PostRepo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
@@ -10,7 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository     @Slf4j
-public class PostRepository {
+public class PostRepository implements PostRepo {
     //CRUD(생성 , 조회 , 수정 , 삭제) (DDL)
     //DB 대용 필드 - sql쿼리로 DB에서 데이터를 받아옴(주로 LIST로)
     private List<Post> posts = new ArrayList<>(

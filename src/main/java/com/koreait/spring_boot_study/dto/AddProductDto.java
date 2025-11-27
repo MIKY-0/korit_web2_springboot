@@ -5,9 +5,10 @@ import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@AllArgsConstructor     @Getter     @Setter
+@AllArgsConstructor     @Getter     @Setter     @NoArgsConstructor
 public class AddProductDto {
 
     @NotBlank(message = "이름은 비울 수 없음")   @Size(max = 50 , message = "50글자 이하로 지어야함.")

@@ -2,13 +2,12 @@ package com.koreait.spring_boot_study.service;
 
 import com.koreait.spring_boot_study.dto.AddPostReqDto;
 import com.koreait.spring_boot_study.dto.ModifyPostReqDto;
-import com.koreait.spring_boot_study.dto.ModifyProductReqDto;
 import com.koreait.spring_boot_study.dto.PostResDto;
 import com.koreait.spring_boot_study.entity.Post;
 import com.koreait.spring_boot_study.exception.PostInsertException;
 import com.koreait.spring_boot_study.exception.PostNotFoundException;
-import com.koreait.spring_boot_study.exception.ProductNotFoundException;
-import com.koreait.spring_boot_study.repository.PostRepository;
+import com.koreait.spring_boot_study.repository.PostRepo;
+import com.koreait.spring_boot_study.repository.impl.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,10 +17,10 @@ import java.util.stream.Collectors;
 
 @Service
 public class PostService {
-    private PostRepository postRepository;
+    private PostRepo postRepository;
 
     @Autowired
-    public PostService(PostRepository postRepository) {
+    public PostService(PostRepo postRepository) {
         this.postRepository = postRepository;
     }
 

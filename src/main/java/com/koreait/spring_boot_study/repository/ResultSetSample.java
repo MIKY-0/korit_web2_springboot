@@ -9,7 +9,8 @@ public class ResultSetSample {
     private List<Product> products; // 필드로 전체 row들을 담은 list를 가지고 있음.
     private int cursor = -1; // 현재 조회중인 list의 index. 최초) 조회하지 않았을 때 -1 , 조회 시작시 index 0부터 시작.
 
-    //DB에 저장된 컬럼명과 동일하게 필드명을 가지고 있음.
+    //DB에 저장된 컬럼명과 동일하게 필드명을 가지고 있음. ->
+    //Map 형태로 key로 컬럼명 , value로 해당 row의 컬럼값을 저장하고 있음.
     private int product_id;
     private String product_name;
     private int product_price;

@@ -35,7 +35,7 @@ public class PostController {
         return ResponseEntity.ok(dtos);
     }
     //localhost:8080/post/2 -> Get: 2번게시글 참조
-    @GetMapping("{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<?> getPostById(@PathVariable int id){
         PostResDto dto = postService.getPostById(id);
         return ResponseEntity.ok(dto);
