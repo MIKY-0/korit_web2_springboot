@@ -24,9 +24,10 @@ public class ProductService {
     private ProductRepo productRepository; // 필드로 인터페이스타입으로 필드를 가지고있음.
 
     @Autowired
-    public ProductService(@Qualifier("jdbc") ProductRepo productRepository){
+    public ProductService(@Qualifier("jdbc") ProductRepo productRepository) {
         this.productRepository = productRepository;
     }
+
     /*
     ProductRepo -> 인터페이스. 인터페이스 타입 객체는 존재할 수 없다. -> 구현체가 있나 Ioc컨테이너를 검사.
     ProductJDBCRepo , ProductRepository 둘다 ProductRepo를 implements 받았음.
@@ -37,7 +38,7 @@ public class ProductService {
      */
     //1.다건조회(상품 이름만)
     //형변환 / 비즈니스 로직(로깅 , 외부 api 호출 등등) 이런것들을 서비스영역에서 해주면 됨.
-    public List<String> getAllProductNames(){
+    public List<String> getAllProductNames() {
         //1) stream을 사용하는 방법
         List<String> productNames = productRepository.findAllProducts().stream()
                 .map(product -> product.getName()) // findAllProducts()는 객체를 가져오는것이고
@@ -47,37 +48,38 @@ public class ProductService {
         //2)for문을 사용하는 방법
         List<String> productNames2 = new ArrayList<>();
         List<Product> products = productRepository.findAllProducts();
-        for(Product p : products){
+        for (Product p : products) {
             productNames2.add(p.getName());
         }
         return productNames;
     }
+
     //2.단건조회(상품 이름만) - id를 받아서 상품명 추출.
-    public String getProductNameById(int id){
+    public String getProductNameById(int id) {
         return productRepository.findProductNameById(id);
     }
 
     //3.상품추가(등록)
-    public void addProduct(AddProductDto dto){
+    public void addProduct(AddProductDto dto) {
         int successCount = productRepository
-                .insertProduct(dto.getName() , dto.getPrice());
-        if(successCount <= 0){
+                .insertProduct(dto.getName(), dto.getPrice());
+        if (successCount <= 0) {
             throw new ProductInsertException("상품등록 중 문제가 생김");
         }
     }
 
     //4.상품삭제
-    public void removeProduct(int id){
+    public void removeProduct(int id) {
         int successCount = productRepository.deleteProductById(id);
-        if(successCount <= 0){
+        if (successCount <= 0) {
             throw new ProductNotFoundException("해당 상품은 존재하지 않음");
         }
     }
 
     //5.상품 업데이트
-    public void modifyProduct(int id , ModifyProductReqDto dto){
-        int successCount = productRepository.updateProduct(id , dto.getName() , dto.getPrice());
-        if(successCount <= 0){
+    public void modifyProduct(int id, ModifyProductReqDto dto) {
+        int successCount = productRepository.updateProduct(id, dto.getName(), dto.getPrice());
+        if (successCount <= 0) {
             throw new ProductNotFoundException("해당 상품은 존재하지 않음");
         }
     }
@@ -90,9 +92,10 @@ public class ProductService {
             Top3SellingProductResDto dto = Top3SellingProductResDto.from(r);
             outputs.add(dto);
         }
-
-        return productRepository.findTop3SellingProducts().stream()
-                .map(model -> Top3SellingProductResDto.from(model)) // 메서드참조로 더 축약 가능.
-                .collect(Collectors.toList());
+        return outputs;
+//        return productRepository.findTop3SellingProducts().stream()
+//                .map(model -> Top3SellingProductResDto.from(model)) // 메서드참조로 더 축약 가능.
+//                .collect(Collectors.toList());
+//    }
     }
 }
