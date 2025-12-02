@@ -4,12 +4,15 @@ package com.koreait.spring_boot_study.service;
 
 import com.koreait.spring_boot_study.dto.AddProductDto;
 import com.koreait.spring_boot_study.dto.ModifyProductReqDto;
+import com.koreait.spring_boot_study.dto.ProductQuantityResDto;
 import com.koreait.spring_boot_study.dto.Top3SellingProductResDto;
+import com.koreait.spring_boot_study.entity.OrderDetail;
 import com.koreait.spring_boot_study.entity.Product;
 import com.koreait.spring_boot_study.exception.ProductInsertException;
 import com.koreait.spring_boot_study.exception.ProductNotFoundException;
 import com.koreait.spring_boot_study.model.Top3SellingProduct;
 import com.koreait.spring_boot_study.repository.ProductRepo;
+import com.koreait.spring_boot_study.repository.mapper.ProductMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -21,10 +24,10 @@ import java.util.stream.Collectors;
 @Service
 public class ProductService {
     //private ProductRepository productRepository;
-    private ProductRepo productRepository; // 필드로 인터페이스타입으로 필드를 가지고있음.
+    private ProductMapper productRepository; // 필드로 인터페이스타입으로 필드를 가지고있음. || ProductRepo를 ProductMapper로 변경
 
     @Autowired
-    public ProductService(@Qualifier("jdbc") ProductRepo productRepository) {
+    public ProductService(/*@Qualifier("jdbc")*/ ProductMapper productRepository) {
         this.productRepository = productRepository;
     }
 
@@ -97,5 +100,31 @@ public class ProductService {
 //                .map(model -> Top3SellingProductResDto.from(model)) // 메서드참조로 더 축약 가능.
 //                .collect(Collectors.toList());
 //    }
+    }
+
+    public List<ProductQuantityResDto> getProductQuantitiesById(int productId) {
+        Product product = productRepository.findProductWithQuantities(productId); // Product객체를 가져옴. 근데 orderDetails필드(list)를 mybatis가 알아서 채워옴.
+        //만약 A entity가 B를 가지고 있고 B entity가 A를 가지고 있을 수 있음(양방향). a.getB().getA().getB().getA()....
+        //-> 양방향 설정을 되도록 쓰지말자.
+
+
+        //옵셔널이 아니라서 null체크 해줌. product가 null이거나 List<OrderDetail>이 null이면
+        if(product == null || product.getOrderDetails() == null)  return List.of();  // 비어있는 리스트 리턴
+        // 1.stream 사용버전
+        List<ProductQuantityResDto> resultData = new ArrayList<>();
+                                    resultData = product.getOrderDetails() // List<OrderDetail>
+                                                .stream() // Stream<OrderDetail>
+                                                .map(od -> new ProductQuantityResDto(product.getName() , product.getPrice() , od.getQuantity()))
+                                                // Stream<ProductQuantityResDto>. od.getProduct() -> xml에 정의해놓지 않아서 null(단방향)
+                                                .collect(Collectors.toList()); // List<ProductQuantityResDto>
+
+        //2.for문 사용 버전
+//        for(OrderDetail od : product.getOrderDetails()) {
+//            ProductQuantityResDto dto = new ProductQuantityResDto(
+//                    product.getName(), product.getPrice(), od.getQuantity()
+//            );
+//            resultData.add(dto);
+//        }
+            return resultData;
     }
 }

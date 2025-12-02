@@ -49,7 +49,7 @@ public class PostController {
 
         //(문제1) 단건 추가 컨트롤러 -> 서비스 -> 레포 코드 작성(validation 사용해보자)
         @PostMapping("/add")
-    public ResponseEntity<?> post(@Valid @RequestBody AddPostReqDto dto){
+    public ResponseEntity<?> post(@Valid @RequestBody AddPostReqDto dto){ //포스트맨에 500뜰때 잭슨이 dto만들 때 @NoArgs 필요!
         postService.addPost(dto);
         return ResponseEntity . status(HttpStatus.CREATED) . body("업데이트 완료");
         }

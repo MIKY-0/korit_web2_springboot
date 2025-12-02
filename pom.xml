@@ -36,11 +36,11 @@
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
 		<!-- ORM -->
-<!--		<dependency>-->
-<!--			<groupId>org.mybatis.spring.boot</groupId>-->
-<!--			<artifactId>mybatis-spring-boot-starter</artifactId>-->
-<!--			<version>3.0.5</version>-->
-<!--		</dependency>-->
+		<dependency>
+			<groupId>org.mybatis.spring.boot</groupId>
+			<artifactId>mybatis-spring-boot-starter</artifactId>
+			<version>3.0.5</version>
+		</dependency>
 		<!-- 스프링부트 프로젝트 개발시 유용한 툴 , 기능 예) 코드변경시 알아서 재시작 -->
 		<!-- HTML을 서버에서 조립할 수 있게 만들어주는 템플릿 엔진(라이브러리. SSR용) -->
 		<dependency>

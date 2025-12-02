@@ -54,6 +54,12 @@ public class ProductController {
     public ResponseEntity<?> top3(){
         return ResponseEntity.ok(productService.getTop3SellingProduct());
     }
+
+    @GetMapping("/{productId}/quantity")
+    public ResponseEntity<?> getProductWithQuantities(@PathVariable int productId){
+        return ResponseEntity.ok(productService.getProductQuantitiesById(productId));
+    }
+
 }
 
 

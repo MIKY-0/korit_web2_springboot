@@ -5,6 +5,7 @@ package com.koreait.spring_boot_study.repository.mapper;
 import com.koreait.spring_boot_study.entity.Product;
 import com.koreait.spring_boot_study.model.Top3SellingProduct;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -23,21 +24,30 @@ public interface ProductMapper {
         DB측 : db의 테이블과 1:1 대응되는 것이 entity. -> fk컬럼을 id필드로 가지고 있음.
         JAVA측 : 객체 지향적(그래프탐색) entity -> fk컬럼을 객체자체를 필드로 가지고 있음.(연관관계 설정이라고도 함)
 
+     ---mybatis 내부구현에 대한 간략한 이해---
+     mapper(interface : 추상체) --- dynamicProxy(mybatis가 알아서) --- xml(실제 구현체)
+     1.서비스는 mapper interface만 알고있음 , 주입받고 있다.
+     2.실제로 Ioc컨테이너에서 주입해주는 것은 mapper 인터페이스가 아니라 dynamicProxy객체
+     3.dynamicProxy객체를 mybatis가 xml 을 보고 생성 & bean에 등록.
      */
 
-
-
     //다건조회
-    public List<Product> findAllProducts();
+    List<Product> findAllProducts();
     //단건조회
-    public String findProductNameById(int id);
+    String findProductNameById(int id);
     //상품추가
-    public int insertProduct(String name , int price);
+    //@Param -> xml에서 매개변수 이름을 전달할 때 사용. 매개변수들을 HashMap형태로 가져가게 됨. @Param에 적어주는 것은 키값.
+    //xml에서는 해당 키값을 적어줘서 value값들을 동적으로 처리. @Param을 적어주지 않으면 컴파일러 옵션에 따라서 작동할 때도 있고,안할때도 있음.
+    //-> 매개변수가 2개 이상일때 적는것 권장.
+    int insertProduct(@Param("name") String name , @Param("price") int price);
     //단건 삭제
-    public int deleteProductById(int id);
+    int deleteProductById(int id);
     //단건 업데이트
-    public int updateProduct(int id , String name , int price);
+    int updateProduct(@Param("id") int id , @Param("name") String name , @Param("price") int price);
 
     //join 결과를 받아오기. 판매량 기준 top3 받아오기.
     List<Top3SellingProduct> findTop3SellingProducts();
+
+    //productId로 판매량까지 같이 조회.
+    Product findProductWithQuantities(int productId);
 }

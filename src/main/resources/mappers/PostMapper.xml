@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 1.ResultMap 작성 2.select 작성(findAll)-->
+<mapper namespace="com.koreait.spring_boot_study.repository.mapper.PostMapper">
+    <resultMap id="postMap" type="com.koreait.spring_boot_study.entity.Post">
+        <id property="id" column="id"/>
+        <result property="title" column="title"/>
+        <result property="content" column="content"/>
+    </resultMap>
+    <select id="findAll" resultMap="postMap">
+        select id ,title , content from post
+    </select>
+    <!-- parameterType을 명시적으로 적어줄 수 있음. -->
+    <select id="findTitleById" resultMap="postMap" parameterType="int">
+        select id , title , content from post
+        where id = #{id}
+    </select>
+
+    <insert id="insertPost">
+        insert into post (title , content)
+        values (#{title} , #{content})
+    </insert>
+
+    <delete id="deletePostById">
+        delete from post
+        where id = #{id}
+    </delete>
+
+    <update id="updatePostById">
+        update post
+        set id = #{id} , title = #{title} , content = #{content}
+    </update>
+</mapper>
