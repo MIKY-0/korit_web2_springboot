@@ -1,7 +1,8 @@
 package com.koreait.spring_boot_study.controller;
 
-import com.koreait.spring_boot_study.dto.AddProductDto;
-import com.koreait.spring_boot_study.dto.ModifyProductReqDto;
+import com.koreait.spring_boot_study.dto.req.AddProductReqDto;
+import com.koreait.spring_boot_study.dto.req.ModifyProductReqDto;
+import com.koreait.spring_boot_study.dto.req.SearchProductReqDto;
 import com.koreait.spring_boot_study.service.ProductService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -26,7 +27,7 @@ public class ProductController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<?> postProduct(@Valid @RequestBody AddProductDto dto){
+    public ResponseEntity<?> postProduct(@Valid @RequestBody AddProductReqDto dto){
         productService.addProduct(dto);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
@@ -60,6 +61,11 @@ public class ProductController {
         return ResponseEntity.ok(productService.getProductQuantitiesById(productId));
     }
 
+    //조건검색. localhost:8080/product/search?nameKeyWord=키보드&minPrice=10000
+    @GetMapping("/search")
+    public ResponseEntity<?> searchProducts(@ModelAttribute SearchProductReqDto dto){
+        return ResponseEntity.ok(productService.searchDetailProducts(dto));
+    }
 }
 
 

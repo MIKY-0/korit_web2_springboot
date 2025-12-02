@@ -1,8 +1,9 @@
 package com.koreait.spring_boot_study.controller;
 
-import com.koreait.spring_boot_study.dto.AddPostReqDto;
-import com.koreait.spring_boot_study.dto.ModifyPostReqDto;
-import com.koreait.spring_boot_study.dto.PostResDto;
+import com.koreait.spring_boot_study.dto.req.AddPostReqDto;
+import com.koreait.spring_boot_study.dto.req.ModifyPostReqDto;
+import com.koreait.spring_boot_study.dto.req.SearchPostReqDto;
+import com.koreait.spring_boot_study.dto.res.PostResDto;
 import com.koreait.spring_boot_study.service.PostService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,5 +72,14 @@ public class PostController {
         //수정요청 PUT , PATCH
     //PUT -> 전체 데이터를 덮어씌우겠다( title , content 둘다 )
     //PATCH -> 일부 데이터를 덮어씌우겠다(title / content 둘 중 하나) -> null 허용해야하는 경우가 많음. -> 까다롭다.
+
+    //(문제1)조건검색. localhost:8080/post/search?titleKeyWord=1번게시물&contentKeyWord=첫번째 내용.
+    @GetMapping("/search")
+    public ResponseEntity<?> searchPosts(
+/*@RequestParam(required = false) String titleKeyWord , @RequestParam(required = false) String contentKeyWord*/
+//RequestParam을 지정하면 반드시 값이 있어야됨. 값이 없다면 400에러 응답. 위처럼 (required = false)작성해주면 괜찮긴 함. 이게 귀찮아서 ModelAtt로 작성.
+            @ModelAttribute SearchPostReqDto dto) {
+        return ResponseEntity.ok(postService.searchDetailPosts(dto));
     }
+}
 

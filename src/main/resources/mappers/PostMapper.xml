@@ -5,11 +5,24 @@
 
 <!-- 1.ResultMap 작성 2.select 작성(findAll)-->
 <mapper namespace="com.koreait.spring_boot_study.repository.mapper.PostMapper">
+    <!-- PostJdbcRepo에 있는 rsToPost 메서드와 동일한 역할 -->
     <resultMap id="postMap" type="com.koreait.spring_boot_study.entity.Post">
+        <!-- PK 매핑 -->
         <id property="id" column="id"/>
+        <!-- 기본필드 매핑(기본자료형)-->
         <result property="title" column="title"/>
         <result property="content" column="content"/>
+        <!-- 타 엔티티 필드 매핑(1 : N , N : 1 , ....)-->
+        <!--문제2-->
+        <collection property = "comments" resultMap = "commentMap" javaType = "list"/>
     </resultMap>
+
+    <!--문제2-->
+    <resultMap id="commentMap" type="com.koreait.spring_boot_study.entity.Comment">
+        <id property = "commentId" column = "comment_id"/>
+        <result property = "commentContent" column = "comment_content"/>
+    </resultMap>
+
     <select id="findAll" resultMap="postMap">
         select id ,title , content from post
     </select>
@@ -33,4 +46,26 @@
         update post
         set id = #{id} , title = #{title} , content = #{content}
     </update>
+
+    <!--문제1-->
+    <select id="searchDetailPosts" resultMap="postMap">
+        select id , title , content from post
+        where 1 = 1
+            <if test = "titleKeyWord != null and titleKeyWord != ''">
+                and title like CONCAT('%' , #{titleKeyWord} , '%')
+            </if>
+            <if test = "contentKeyWord != null and contentKeyWord != ''">
+                and content like CONCAT('%' , #{contentKeyWord} , '%')
+            </if>
+        order by id
+    </select>
+
+    <!--문제2-->
+     <select id = "findPostWithComment" resultMap = "postMap">
+         select p.id , p.title , p.content , c.comment_id , c.comment_content
+         from post p left join comment c <!-- left join -> 댓글이 없을 수도 있는데 없는 애도 가져오려고-->
+                    on p.id = c.post_id
+         where p.id = #{id}
+         order by c.comment_id
+     </select>
 </mapper>

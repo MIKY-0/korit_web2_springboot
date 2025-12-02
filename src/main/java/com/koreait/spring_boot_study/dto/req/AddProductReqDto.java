@@ -1,4 +1,4 @@
-package com.koreait.spring_boot_study.dto;
+package com.koreait.spring_boot_study.dto.req;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @AllArgsConstructor     @Getter     @Setter     @NoArgsConstructor
-public class AddProductDto {
+public class AddProductReqDto {
 
     @NotBlank(message = "이름은 비울 수 없음")   @Size(max = 50 , message = "50글자 이하로 지어야함.")
     private String name;

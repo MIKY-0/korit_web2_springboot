@@ -1,12 +1,9 @@
 package com.koreait.spring_boot_study.controller;
 
-import com.koreait.spring_boot_study.dto.AddPostReqDto;
-import com.koreait.spring_boot_study.dto.StudyRequestDto;
+import com.koreait.spring_boot_study.dto.req.AddPostReqDto;
+import com.koreait.spring_boot_study.dto.req.StudyRequestDto;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.coyote.Request;
-import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

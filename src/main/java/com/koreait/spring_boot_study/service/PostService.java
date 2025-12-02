@@ -1,13 +1,13 @@
 package com.koreait.spring_boot_study.service;
 
-import com.koreait.spring_boot_study.dto.AddPostReqDto;
-import com.koreait.spring_boot_study.dto.ModifyPostReqDto;
-import com.koreait.spring_boot_study.dto.PostResDto;
+import com.koreait.spring_boot_study.dto.req.AddPostReqDto;
+import com.koreait.spring_boot_study.dto.req.ModifyPostReqDto;
+import com.koreait.spring_boot_study.dto.req.SearchPostReqDto;
+import com.koreait.spring_boot_study.dto.res.PostResDto;
+import com.koreait.spring_boot_study.dto.res.PostWithCommentsResDto;
 import com.koreait.spring_boot_study.entity.Post;
 import com.koreait.spring_boot_study.exception.PostInsertException;
 import com.koreait.spring_boot_study.exception.PostNotFoundException;
-import com.koreait.spring_boot_study.repository.PostRepo;
-import com.koreait.spring_boot_study.repository.impl.PostRepository;
 import com.koreait.spring_boot_study.repository.mapper.PostMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -78,5 +78,26 @@ public class PostService {
         if (successCount <= 0) {
             throw new PostNotFoundException("해당 게시글은 존재하지 않음");
         }
+    }
+
+    // (문제1)게시물 상세 검색. dto-req , res. PostResDto가 있더라도 따로 하나더 만들어주는게 좋음.
+    public List<SearchPostReqDto> searchDetailPosts(SearchPostReqDto dto){
+        List<Post> posts = postRepository.searchDetailPosts(dto.getTitleKeyWord() , dto.getContentKeyWord());
+        if(posts == null || posts.isEmpty()) throw new PostNotFoundException("조건에 맞는 게시글이 없습니다");
+
+        return posts.stream()
+                .map(p -> new SearchPostReqDto(p.getTitle() , p.getContent()))
+                .collect(Collectors.toList());
+    }
+
+    //(문제2)
+    public PostWithCommentsResDto findPostWithComments(int id) {
+            Post post = postRepository.findPostWithComments(id)
+                    .orElseThrow(() -> new PostNotFoundException("해당 게시글을 찾을 수 없음"));
+        //comments null 체크용
+        List<String> comments = post.getComments() == null ? List.of() : post.getComments().stream()
+                                                                        .map(c -> c.getCommentContent())
+                                                                        .collect(Collectors.toList());
+        return new PostWithCommentsResDto(post.getTitle() , post.getContent() , comments);
     }
 }

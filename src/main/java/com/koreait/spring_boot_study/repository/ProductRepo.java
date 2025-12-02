@@ -3,10 +3,7 @@ package com.koreait.spring_boot_study.repository;
 import com.koreait.spring_boot_study.entity.Product;
 import com.koreait.spring_boot_study.model.Top3SellingProduct;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 public interface ProductRepo {
     //다건조회

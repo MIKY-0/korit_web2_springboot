@@ -2,8 +2,6 @@ package com.koreait.spring_boot_study.repository;
 
 import com.koreait.spring_boot_study.entity.Post;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 

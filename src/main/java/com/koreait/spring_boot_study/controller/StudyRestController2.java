@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @RestController // 스프링부트는 톰캣(자바로 만든 서버) 내장. 로컬에서 8080포트로 실행됨. localhost:8080 -> 스프링부트 주소
 //localhost:8080/practice/quiz1 -> quiz1메서드 실행. 이 주소 경로 못찾으면 404뜸.

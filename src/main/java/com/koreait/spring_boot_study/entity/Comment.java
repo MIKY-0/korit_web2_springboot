@@ -1,14 +1,19 @@
 package com.koreait.spring_boot_study.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@AllArgsConstructor     @NoArgsConstructor      @Data
 public class Comment {
     private int commentId;
-    private String content;
+    private String commentContent;
     //private int postId;
     private Post post; // fk대신 객체를 필드로 가지고 있어야함.
     //comment.getPost().getId() -> 계속된 참조로 탐색하는 것(객체 그래프탐색)
 
     //하나의 글에는 여러개의 댓글이 있다. -> 1개의 post는 여러개의 comment를 가질 수 있음.
-    //1.fk는 누가 가져야하나? comment가 postId를 가지고 있어야함.
+    //1.fk는 누가 가져야하나? comment가 postId를 가지고 있어야함. fk가 있는 쪽이 N.
     //2.하나의 댓글은 하나의 글에만 달릴 수 있음. -> post : comment = 1 : N 관계
 
     /*

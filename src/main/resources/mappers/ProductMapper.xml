@@ -85,4 +85,29 @@
                         on p. product_id = od.product_id
         where p.product_id = #{productId}
     </select>
+
+    <select id="searchDetailProducts" resultMap="productMap">
+        select product_id , product_name , product_price from product
+        where 1 = 1 <!-- where쿼리 안에 모든 if문들이 통과되지 않을 경우(= 아무런 조건이 없는 경우가 됨).
+        아무런 조건이 없는데 where절을 넣으면 오류가 걸리니까 그걸 방지하려고 1 = 1 기입.-->
+        <if test = "nameKeyWord != null and nameKeyWord != ''">
+              and product_name like CONCAT('%' , #{nameKeyWord} , '%') <!-- 만약 nameKeyWord가 존재한다면 검색-->
+        </if>
+        <!-- xml에서 where 쿼리 작성시 , (< , >) 주의사항. 꺽쇄는 태그로 인식하는 오류가 발생할 수 있음.
+        > : &gt;  ,  < : &lt;  ,  >= : &gt;=  ,  <= : &lt;=
+        -->
+         <if test = "minPrice != null">
+             and product_price &gt;= #{minPrice}  <!-- 만약 minPrice가 존재한다면 필터링-->
+        </if>
+        <if test = "maxPrice != null">
+              and product_price &lt;= #{maxPrice}  <!-- 만약 maxPrice가 존재한다면 필터링-->
+        </if>
+        order by product_id desc
+    </select>
 </mapper>
+
+
+
+
+
+

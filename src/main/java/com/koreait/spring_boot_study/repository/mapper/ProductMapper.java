@@ -50,4 +50,9 @@ public interface ProductMapper {
 
     //productId로 판매량까지 같이 조회.
     Product findProductWithQuantities(int productId);
+
+    //(문제1)상품이름 , 최소가격 , 최대가격 필터링 검색. -> where product_name like '% + {product_name} + %'
+    List<Product> searchDetailProducts(@Param("nameKeyWord") String nameKeyWord ,
+                                 @Param("minPrice") Integer minPrice ,
+                                 @Param("maxPrice") Integer maxPrice); // Integer하는 이유 : maxPrice가 없는경우 null이 나오게하려고.
 }
