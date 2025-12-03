@@ -5,7 +5,7 @@ import lombok.*;
 import java.util.List;
 
 @AllArgsConstructor     @Data
-@NoArgsConstructor
+@NoArgsConstructor      @Builder
 //엔티티 : 관계형 데이터베이스와 1:1 대응되는 자바 객체.
 public class Product {
     private int id;

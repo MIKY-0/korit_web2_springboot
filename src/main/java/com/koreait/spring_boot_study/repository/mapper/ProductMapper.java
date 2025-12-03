@@ -55,4 +55,7 @@ public interface ProductMapper {
     List<Product> searchDetailProducts(@Param("nameKeyWord") String nameKeyWord ,
                                  @Param("minPrice") Integer minPrice ,
                                  @Param("maxPrice") Integer maxPrice); // Integer하는 이유 : maxPrice가 없는경우 null이 나오게하려고.
+    //다건 입력
+    int insertProducts(List<Product> products);
+
 }

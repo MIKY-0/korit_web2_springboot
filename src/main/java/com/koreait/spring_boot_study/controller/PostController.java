@@ -4,6 +4,7 @@ import com.koreait.spring_boot_study.dto.req.AddPostReqDto;
 import com.koreait.spring_boot_study.dto.req.ModifyPostReqDto;
 import com.koreait.spring_boot_study.dto.req.SearchPostReqDto;
 import com.koreait.spring_boot_study.dto.res.PostResDto;
+import com.koreait.spring_boot_study.dto.res.PostWithCommentsResDto;
 import com.koreait.spring_boot_study.service.PostService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -80,6 +81,19 @@ public class PostController {
 //RequestParam을 지정하면 반드시 값이 있어야됨. 값이 없다면 400에러 응답. 위처럼 (required = false)작성해주면 괜찮긴 함. 이게 귀찮아서 ModelAtt로 작성.
             @ModelAttribute SearchPostReqDto dto) {
         return ResponseEntity.ok(postService.searchDetailPosts(dto));
+    }
+
+    @GetMapping("/{id}/comments")
+    public ResponseEntity<?> getPostWithComments(@PathVariable int id) {
+        PostWithCommentsResDto dto = postService.getPostWithComments(id);
+        return ResponseEntity.ok(dto);
+    }
+
+    //(문제1) 다건입력
+    @PostMapping("/add/bulk")
+    public ResponseEntity<?> addPosts(@RequestBody @Valid List<AddPostReqDto> dtos){
+        postService.addPosts(dtos);
+        return ResponseEntity.status(HttpStatus.CREATED).body("등록한 모든 상품 등록 완료 : " + dtos.size() + "건");
     }
 }
 

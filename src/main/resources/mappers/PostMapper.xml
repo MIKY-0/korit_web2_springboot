@@ -61,11 +61,19 @@
     </select>
 
     <!--문제2-->
-     <select id = "findPostWithComment" resultMap = "postMap">
+     <select id = "findPostWithComments" resultMap = "postMap">
          select p.id , p.title , p.content , c.comment_id , c.comment_content
          from post p left join comment c <!-- left join -> 댓글이 없을 수도 있는데 없는 애도 가져오려고-->
                     on p.id = c.post_id
          where p.id = #{id}
          order by c.comment_id
      </select>
+
+    <!-- (문제1)다건입력-->
+    <insert id="insertPosts">
+        insert into post (title , content)
+        values <foreach collection="posts" item="post" separator=",">
+        (#{post.title} , #{post.content})
+    </foreach>
+    </insert>
 </mapper>

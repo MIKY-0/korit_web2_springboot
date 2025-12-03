@@ -41,6 +41,9 @@ public interface PostMapper {
         '댓글3'
         ]
     */
-    Optional<Post> findPostWithComments();
+    Optional<Post> findPostWithComments(int id);
+
+    //(문제1) 다건입력
+     int insertPosts(List<Post> posts);
 
 }
