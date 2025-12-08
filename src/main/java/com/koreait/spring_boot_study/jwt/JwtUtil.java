@@ -6,7 +6,8 @@ import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import lombok.Value;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
@@ -68,7 +69,7 @@ public class JwtUtil { //jwt 토큰 발급 & jwt 토큰 검증
     //토큰 검증(서브) & claim들 추출(메인)
     public Claims getClaims(String token) throws JwtException {
         return Jwts.parser().verifyWith(key) /*복호화*/. build() . parseSignedClaims(token) /*여기서 실제 검증이 이루어짐.
-        1.signature 검증(위조 여부 검사) -> 검증 실패시 예외 2.만료시각 검증 -> 검증 실패시 예외.*/ .getPayload();
+        1.signature 검증(위조 여부 검사) -> 검증 실패시 예외   2.만료시각 검증 -> 검증 실패시 예외.*/ .getPayload();
     }
 
     //Jwt 토큰(문자열)을 사용자에게 발급. -> 사용자는 그 이후부터 요청할 때 요청 헤더에 Authorization : "Barer " + 토큰문자열 첨부하여 요청을 서버로 보내야함.
@@ -77,5 +78,14 @@ public class JwtUtil { //jwt 토큰 발급 & jwt 토큰 검증
     }
     public String removeBarer(String header) {
         return header.substring("Bearer ".length()); // "Bearer " 접두를 떼줌.
+    }
+
+    public boolean isRefreshToken(String token){
+        try{
+         String type = getClaims(token) . get("type" , String.class);
+         return type.equals("REFRESH");
+        } catch (Exception e) {
+            return false;
+        }
     }
 }
