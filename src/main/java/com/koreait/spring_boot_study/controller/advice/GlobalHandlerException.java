@@ -87,7 +87,12 @@ public class GlobalHandlerException {
 
     @ExceptionHandler(UserException.class)
     public ResponseEntity<?> handleUserException(UserException e){
-        return ResponseEntity.status(e.getStatus()).body(e.getMessage());
+        return ResponseEntity.status(e.getStatus()) . body(e.getMessage());
+    }
+
+    @ExceptionHandler(RefreshTokenException.class)
+    public ResponseEntity<?> handleRefreshTokenException(RefreshTokenException e){
+        return ResponseEntity.status(e.getStatus()) . body(e.getMessage());
     }
 }
 

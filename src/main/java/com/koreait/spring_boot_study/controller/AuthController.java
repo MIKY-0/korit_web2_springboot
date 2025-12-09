@@ -3,6 +3,7 @@ package com.koreait.spring_boot_study.controller;
 import com.koreait.spring_boot_study.dto.req.SignInReqDto;
 import com.koreait.spring_boot_study.dto.req.SignUpReqDto;
 import com.koreait.spring_boot_study.dto.res.SignInResDto;
+import com.koreait.spring_boot_study.exception.RefreshTokenException;
 import com.koreait.spring_boot_study.jwt.JwtUtil;
 import com.koreait.spring_boot_study.service.AuthService;
 import jakarta.servlet.http.HttpServletResponse;
@@ -42,17 +43,19 @@ public class AuthController { // 회원가입 , 로그인 , 로그아웃
         authService.signUp(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body("계정생성 완료");
     }
-        //논리적으로 getMapping이 맞으나 -> param등에 민감정보가 노출. -> body가 필요해서 postMapping.
-        @PostMapping("/signin")
-        public ResponseEntity<?> signIn(@RequestBody SignInReqDto reqDto ,
-            //컨트롤러 : servlet Dispatcher가 일을 시키는 구조.
-            //servlet Dispatcher가 request , response 객체 가지고 있음.
-            HttpServletResponse response){
-            SignInResDto resDto = authService.signIn(reqDto);
 
-            //refreshToken은 cookie(헤더)에 담아서 응답(나중에)
+    //논리적으로 getMapping이 맞으나 -> param등에 민감정보가 노출. -> body가 필요해서 postMapping.
+    @PostMapping("/signin")
+    public ResponseEntity<?> signIn(@RequestBody SignInReqDto reqDto ,
+        //컨트롤러 : servlet Dispatcher가 일을 시키는 구조.
+        //servlet Dispatcher가 request , response 객체 가지고 있음.
+        HttpServletResponse response){
+        SignInResDto resDto = authService.signIn(reqDto);
 
-            return ResponseEntity.ok(resDto.getAccessToken()); // body로 accessToken만 응답해줌.
+        //refreshToken은 cookie(헤더)에 담아서 응답
+        addRefreshTokenCookie(resDto.getRefreshToken(), response);
+
+        return ResponseEntity.ok(resDto.getAccessToken()); // body로 accessToken만 응답해줌.
     }
 
     /*
@@ -63,10 +66,38 @@ public class AuthController { // 회원가입 , 로그인 , 로그아웃
     public ResponseEntity<?> refresh(HttpServletResponse response , @CookieValue(value = "refreshToken" , required = false) String refreshToken) {
         // 쿠키에서 refresh 토큰을 꺼내와야함.
         if(refreshToken == null){
-            //todo : 예외 던져줘야됨.
+            throw new RefreshTokenException("refresh토큰이 존재하지 않습니다." , HttpStatus.BAD_REQUEST);
         }
 
         //서비스로 쿠키값(refresh 토큰) 넘김.
-        return ResponseEntity.ok("")
+        SignInResDto resDto = authService.refreshToken(refreshToken);
+
+        //쿠키에 새로운 refresh토큰 설정.
+        addRefreshTokenCookie(resDto.getRefreshToken() , response);
+        return ResponseEntity.ok(resDto.getAccessToken()); // 응답바디에는 accessToken만 응답.
+    }
+
+    //로그아웃
+    //프론트엔드에서 사실상 저장해뒀던 accessToken을 지워버리면 로그아웃이 구현된 것.
+    //놀이공원 다 즐기고 나갈때 팔찌를 가위로 자르는것과 같음.
+    //하지만 refreshToken은 DB에 저장돼있어서 누적되면 곤란하니 삭제해준다.
+    public ResponseEntity<?> logout(@CookieValue(value = "refreshToken" , required = false) String refreshToken , HttpServletResponse response){
+        if(refreshToken == null){
+            throw new RefreshTokenException("refresh토큰이 존재하지 않습니다." , HttpStatus.BAD_REQUEST);
+        }
+        authService.logout(refreshToken); // 서비스 호출해서 DB에서 refreshToken 삭제.
+
+        //쿠키도 브라우저에서 삭제.
+        ResponseCookie cookie = ResponseCookie.from("refreshToken" , "")
+                .httpOnly(false) // 운영시 true
+                .secure(false)// 운영시 true
+                .sameSite("Lax") // 브라우저 get요청은 ok
+                .path("/")
+                .maxAge(0) // 쿠키 수명을 0초 -> 사실상 삭제.
+                .build();
+        response.addHeader(HttpHeaders.SET_COOKIE , cookie.toString());
+        return ResponseEntity.ok("로그아웃 완료");
     }
 }
+
+

@@ -2,6 +2,7 @@ package com.koreait.spring_boot_study.config;
 
 import com.koreait.spring_boot_study.jwt.JwtAuthenticationEntryPoint;
 import com.koreait.spring_boot_study.jwt.JwtAuthenticationFilter;
+import com.koreait.spring_boot_study.jwt.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,7 +21,8 @@ import java.util.List;
 @Configuration
 @RequiredArgsConstructor
 public class SecurityConfig {
-    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final JwtUtil jwtUtil;
+   // private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @Bean // 사용자 패스워드를 암호화해주는 객체(시큐리티 라이브러리)
     public BCryptPasswordEncoder bCryptPasswordEncoder(){
@@ -31,6 +33,11 @@ public class SecurityConfig {
     @Bean // 인증실패시 실패응답을 처리한 entryPoint.
     JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint(){
         return new JwtAuthenticationEntryPoint();
+    }
+
+    @Bean
+    public JwtAuthenticationFilter jwtAuthenticationFilter(){
+        return new JwtAuthenticationFilter(jwtUtil);
     }
     /*
     CORS(Cross-Origin-Resource-Sharing) 설정 : CORS에러를 방지하기 위해 설정.
@@ -84,7 +91,7 @@ public class SecurityConfig {
 
         //jwt 관련 필터설정
         //1. jwt필터 추가
-        http.addFilterBefore(jwtAuthenticationFilter , UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(jwtAuthenticationFilter() , UsernamePasswordAuthenticationFilter.class);
 
         //2. jwt 인증 실패 시 처리 (entryPoint)
         http.exceptionHandling(e -> e.authenticationEntryPoint(jwtAuthenticationEntryPoint()));
