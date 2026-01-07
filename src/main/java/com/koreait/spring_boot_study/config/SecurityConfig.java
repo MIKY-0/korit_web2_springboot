@@ -57,7 +57,7 @@ public class SecurityConfig {
 
         //1. 쿠키 사용하려면 특정 도메인 지정해줘야됨.
         cors.setAllowedOrigins(List.of(
-                "http://localhost:3000" // 특정 origin만 허용해야 쿠키사용가능.
+                "http://localhost:5500" , "http:127.0.0.1:5500" // 특정 origin만 허용해야 쿠키사용가능.
         ));
 
         cors.setAllowCredentials(true); // 2.쿠키를 쓰겠습니까?
