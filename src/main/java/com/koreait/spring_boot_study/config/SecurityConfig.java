@@ -6,6 +6,7 @@ import com.koreait.spring_boot_study.jwt.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -22,7 +23,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SecurityConfig {
     private final JwtUtil jwtUtil;
-   // private final JwtAuthenticationFilter jwtAuthenticationFilter;
+// private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @Bean // 사용자 패스워드를 암호화해주는 객체(시큐리티 라이브러리)
     public BCryptPasswordEncoder bCryptPasswordEncoder(){
@@ -57,7 +58,7 @@ public class SecurityConfig {
 
         //1. 쿠키 사용하려면 특정 도메인 지정해줘야됨.
         cors.setAllowedOrigins(List.of(
-                "http://localhost:5500" , "http:127.0.0.1:5500" // 특정 origin만 허용해야 쿠키사용가능.
+                "<http://localhost:5500>" , "http:127.0.0.1:5500" // 특정 origin만 허용해야 쿠키사용가능.
         ));
 
         cors.setAllowCredentials(true); // 2.쿠키를 쓰겠습니까?
@@ -65,8 +66,12 @@ public class SecurityConfig {
                 "Set-Cookie"
         ));
 
-        cors.addAllowedHeader(CorsConfiguration.ALL); // 요청을 보내는 쪽의 Req , Res 헤더 정보에 대한 제한 모두 허용.
-        cors.addAllowedMethod(CorsConfiguration.ALL); // 요청을 보내는 쪽의 메서드(get,post...) 모두 허용.
+        //cors.addAllowedHeader(CorsConfiguration.ALL); // 요청을 보내는 쪽의 Req , Res 헤더 정보에 대한 제한 모두 허용.
+        //cors.addAllowedMethod(CorsConfiguration.ALL); // 요청을 보내는 쪽의 메서드(get,post...) 모두 허용.
+
+        //백-프론트 연결할때
+        cors.addAllowedHeader("Authentication");
+        cors.addAllowedHeader("Content-Type");
 
         UrlBasedCorsConfigurationSource sc = new UrlBasedCorsConfigurationSource(); // 요청 url에 대한 cors설정을 적용하기 위한 객체(배달부)
         sc.registerCorsConfiguration("/**" , cors); // /** : 모든 url 패턴
@@ -98,10 +103,14 @@ public class SecurityConfig {
 
         //url 요청에 대한 권한 설정.
         http.authorizeHttpRequests(auth -> {
+            auth.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll(); //백-프론트 연결할때
+
             auth.requestMatchers("/auth/**").permitAll(); // 특정 url 요청에 대해서는 검사하지않고 허용
             auth.anyRequest().authenticated(); // 그외 모든 url 요청은 검사하겠다.
             //auth.anyRequest().permitAll(); // 우선 모두 통과
         });
         return http.build();
     }
+
+
 }

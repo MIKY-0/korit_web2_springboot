@@ -55,7 +55,7 @@ public class GlobalHandlerException {
         BindingResult bindingResult = e.getBindingResult();
 
         if(bindingResult.hasErrors()){
-            bindingResult.getFieldErrors() // 필드에러들을 List로 리턴
+            errorResp = bindingResult.getFieldErrors() // 필드에러들을 List로 리턴
                     .stream() // [ 객체1,객체2....]를
                     .map(fieldError -> Map.of(
                             fieldError.getField() , fieldError.getDefaultMessage()
