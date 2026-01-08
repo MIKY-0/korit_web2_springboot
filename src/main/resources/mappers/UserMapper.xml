@@ -22,26 +22,26 @@
     </resultMap>
 
     <insert id="addUser">
-        insert into user(user_name , name , password , email , create_at , update_at , role_id)
+        insert into user(username , name , password , email , create_at , update_at , role_id)
         values (#{userName} , #{name} , #{password} , #{email} , now() , now() , 1)
     </insert>
 
     <select id="getUserByUserName" resultMap="userResultMap">
-        select u.user_id , u.user_name , u.password , u.name , u.email , u.create_at , u.update_at ,
+        select u.user_id , u.username , u.password , u.name , u.email , u.create_at , u.update_at ,
                r.role_id , r.role_name
         from user u inner join role r on u.role_id = r.role_id
-        where u.user_name = #{userName}
+        where u.username = #{userName}
     </select>
 
     <select id="getUserByEmail" resultMap="userResultMap">
-        select u.user_id , u.user_name , u.password , u.name , u.email , u.create_at , u.update_at ,
+        select u.user_id , u.username , u.password , u.name , u.email , u.create_at , u.update_at ,
                r.role_id , r.role_name
         from user u inner join role r on u.role_id = r.role_id
         where u.email = #{email}
     </select>
 
     <select id="getUserById" resultMap="userResultMap">
-        select u.user_id , u.user_name , u.password , u.name , u.email , u.create_at , u.update_at ,
+        select u.user_id , u.username , u.password , u.name , u.email , u.create_at , u.update_at ,
                r.role_id , r.role_name
         from user u inner join role r on u.role_id = r.role_id
         where u.user_id = #{userId}

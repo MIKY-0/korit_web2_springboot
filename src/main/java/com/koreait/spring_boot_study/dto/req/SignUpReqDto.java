@@ -18,11 +18,11 @@ public class SignUpReqDto {
     ^?=.*[A - Za - z]{4 , 10}$ : 대소문자를 하나이상 포함하는 4 ~ 10자.
      */
     @NotBlank(message = "아이디 입력해주세요")
-    @Pattern(regexp = "^[a - z0 - 9]{4,20}$" , message = "아이디는 4~20자 영문 소문자 , 숫자만 사용가능합니다.")
+    @Pattern(regexp = "^[a-z0-9]{4,20}$" , message = "아이디는 4~20자 영문 소문자 , 숫자만 사용가능합니다.")
     private String userName;
     @NotBlank(message = "패스워드 입력해주세요")
     private String password;
-    @NotBlank(message = "이메일 입력해주세요")
+    @NotBlank(message = "이름 입력해주세요")
     private String name;
     @NotBlank(message = "이메일 입력해주세요")   @Email(message = "올바른 이메일 형식이 아닙니다")
     private String email;
